@@ -68,11 +68,12 @@ router.get('/', tokenControl, (req, res) => {
                 (err, rowCount, rows) => {
                     if(err) {
                         console.log(err);
+                    } else{
+                        console.log(rowCount + ' eklendi');
+                        res.sendStatus(200);
                     }
                 }
-            ).on('doneInProc', (rowCount, more, rows) => {
-                console.log(rows);
-            });
+            );
             request.addParameter('FirmId', TYPES.Int, req.body.FirmId);
             request.addParameter('RowID', TYPES.Numeric, req.body.RowID);
             request.addParameter('LoomNo', TYPES.VarChar, req.body.LoomNo);
