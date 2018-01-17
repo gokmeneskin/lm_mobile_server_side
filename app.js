@@ -11,6 +11,8 @@ app.use(cors());
 
 const users = require('./routers/users');
 app.use('/api/users', users);
+const clientServers = require('./routers/clientServers');
+app.use('/api/clientservers', clientServers);
 
 app.listen(port, () => {
    console.log('Server ' + port + ' port üzerinden başlatıldı');
