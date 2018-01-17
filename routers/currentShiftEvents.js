@@ -6,7 +6,7 @@ const Connection = require('tedious').Connection;
 const Request = require('tedious').Request;
 const TYPES = require('tedious').TYPES;
 
-router.get('/', tokenControl, (req, res) => {
+router.post('/', tokenControl, (req, res) => {
     const connection = new Connection(settings.dbConfig);
     connection.on('connect', (err) => {
         if(err) {
