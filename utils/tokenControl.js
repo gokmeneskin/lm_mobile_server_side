@@ -52,6 +52,7 @@ module.exports = function (req, res, next) {
                                   const firm = jsonArray[0];
                                   const today = new Date();
                                   if(firm.ValidationDate > today) {
+                                      req.FirmId = firmId;
                                       next();
                                   } else {
                                       res.json({

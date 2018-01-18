@@ -105,4 +105,51 @@ router.post('/', tokenControl, (req, res) => {
     });
 });
 
+router.get('/', tokenControl, (req, res) => {
+    const connection = new Connection(settings.dbConfig);
+    connection.on('connect', (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            request = new Request(
+                `
+                    SELECT 
+                        *
+                    FROM 
+                        CurrentShiftEvents C WITH(NOLOCK)
+                    WHERE 
+                        C.FirmId = @firmId
+                `,
+                (err, rowCount, rows) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                }
+            ).on('doneInProc', (rowCount, more, rows) => {
+                if (rowCount === 0) {
+                    res.json({
+                        success: false,
+                        msg: 'Kullanıcı adı ya da şifre hatalı'
+                    });
+                } else {
+                    jsonArray = [];
+                    rows.forEach(function (columns) {
+                        let rowObject = {};
+                        columns.forEach(function (column) {
+                            rowObject[column.metadata.colName] = column.value;
+                        });
+                        jsonArray.push(rowObject);
+                    });
+                    res.json({
+                        success: true,
+                        data: jsonArray
+                    });
+                }
+            });
+            request.addParameter('firmId', TYPES.Int, req.FirmId);
+            connection.execSql(request);
+        }
+    });
+});
+
 module.exports = router;
