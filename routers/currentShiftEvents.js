@@ -14,56 +14,87 @@ router.post('/', tokenControl, (req, res) => {
         } else {
             request = new Request(
                 `
-                    INSERT INTO CurrentShiftEvents
-                    (
-                        [FirmId]
-                        ,[RowID]
-                        ,[LoomNo]
-                        ,[GroupName]
-                        ,[CentralUnitNo]
-                        ,[ModuleNo]
-                        ,[StartDateTime]
-                        ,[EndDateTime]
-                        ,[EventID]
-                        ,[LoomSpeed]
-                        ,[ShiftName]
-                        ,[ShiftDate]
-                        ,[ShiftNo]
-                        ,[LineDuration]
-                        ,[LineDurationMinute]
-                        ,[PickCounter]
-                        ,[StartShiftPickCounter]
-                        ,[EndShiftPickCounter]
-                        ,[LineStatus]
-                        ,[OperationCode]
-                        ,[PowerOnCount]
-                        ,[Problem]
-                    )
-                VALUES
-                    (
-                        @FirmId
-                        ,@RowID
-                        ,@LoomNo
-                        ,@GroupName
-                        ,@CentralUnitNo
-                        ,@ModuleNo
-                        ,@StartDateTime
-                        ,@EndDateTime
-                        ,@EventID
-                        ,@LoomSpeed
-                        ,@ShiftName
-                        ,@ShiftDate
-                        ,@ShiftNo
-                        ,@LineDuration
-                        ,@LineDurationMinute
-                        ,@PickCounter
-                        ,@StartShiftPickCounter
-                        ,@EndShiftPickCounter
-                        ,@LineStatus
-                        ,@OperationCode
-                        ,@PowerOnCount
-                        ,@Problem
-                    )
+                    IF NOT EXISTS (SELECT * FROM CurrentShiftEvents CSE WITH(NOLOCK) WHERE CSE.FirmId = @FirmId AND CSE.LoomNo = @LoomNo)
+                        BEGIN
+                            INSERT INTO CurrentShiftEvents
+                                (
+                                    FirmId
+                                    ,RowID
+                                    ,LoomNo
+                                    ,GroupName
+                                    ,CentralUnitNo
+                                    ,ModuleNo
+                                    ,StartDateTime
+                                    ,EndDateTime
+                                    ,EventID
+                                    ,LoomSpeed
+                                    ,ShiftName
+                                    ,ShiftDate
+                                    ,ShiftNo
+                                    ,LineDuration
+                                    ,LineDurationMinute
+                                    ,PickCounter
+                                    ,StartShiftPickCounter
+                                    ,EndShiftPickCounter
+                                    ,LineStatus
+                                    ,OperationCode
+                                    ,PowerOnCount
+                                    ,Problem
+                                )
+                            VALUES
+                                (
+                                    @FirmId
+                                    ,@RowID
+                                    ,@LoomNo
+                                    ,@GroupName
+                                    ,@CentralUnitNo
+                                    ,@ModuleNo
+                                    ,@StartDateTime
+                                    ,@EndDateTime
+                                    ,@EventID
+                                    ,@LoomSpeed
+                                    ,@ShiftName
+                                    ,@ShiftDate
+                                    ,@ShiftNo
+                                    ,@LineDuration
+                                    ,@LineDurationMinute
+                                    ,@PickCounter
+                                    ,@StartShiftPickCounter
+                                    ,@EndShiftPickCounter
+                                    ,@LineStatus
+                                    ,@OperationCode
+                                    ,@PowerOnCount
+                                    ,@Problem
+                                )
+                        END
+                    ELSE
+                        BEGIN
+                            UPDATE CurrentShiftEvents
+                            SET
+                                LoomNo = @LoomNo
+                                ,GroupName = @GroupName
+                                ,CentralUnitNo = @CentralUnitNo
+                                ,ModuleNo = @ModuleNo
+                                ,StartDateTime = @StartDateTime
+                                ,EndDateTime = @EndDateTime
+                                ,EventID = @EventID
+                                ,LoomSpeed = @LoomSpeed
+                                ,ShiftName = @ShiftName
+                                ,ShiftDate = @ShiftDate
+                                ,ShiftNo = @ShiftNo
+                                ,LineDuration = @LineDuration
+                                ,LineDurationMinute = @LineDurationMinute
+                                ,PickCounter = @PickCounter
+                                ,StartShiftPickCounter = @StartShiftPickCounter
+                                ,EndShiftPickCounter = @EndShiftPickCounter
+                                ,LineStatus = @LineStatus
+                                ,OperationCode = @OperationCode
+                                ,PowerOnCount = @PowerOnCount
+                                ,Problem = @Problem
+                            WHERE
+                                FirmId = @FirmId AND
+                                LoomNo = @LoomNo
+                        END
                 `,
                 (err, rowCount, rows) => {
                     if(err) {
