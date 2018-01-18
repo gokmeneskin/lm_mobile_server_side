@@ -119,6 +119,8 @@ router.get('/', tokenControl, (req, res) => {
                         CurrentShiftEvents C WITH(NOLOCK)
                     WHERE 
                         C.FirmId = @firmId
+                    ORDER BY
+                        C.LoomNo
                 `,
                 (err, rowCount, rows) => {
                     if (err) {
