@@ -69,8 +69,11 @@ router.post('/', tokenControl, (req, res) => {
                     if(err) {
                         console.log(err);
                     } else{
-                        console.log(rowCount + ' eklendi');
-                        res.sendStatus(200);
+                        console.log(rowCount + ' Current Shift Events verisi eklendi');
+                        res.json({
+                           success: true,
+                           msg: 'Veriler alındı'
+                        });
                     }
                 }
             );
